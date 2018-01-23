@@ -3,15 +3,14 @@ package main
 import (
 	"encoding/json"
 	"os/exec"
-	"bytes"
 	"os"
 	"fmt"
 )
 
 type status struct {
 	Status string							`json:"status"`
-	Out string								`json:"out"`
-	Result map[string]interface{}			`json:"result"`
+	Out string								`json:"stdout"`
+	Result map[string]interface{}			`json:"jsonst"`
 }
 
 func (s *status) getExec(key string, value string ) error {
@@ -20,25 +19,16 @@ func (s *status) getExec(key string, value string ) error {
 	cmdExec := cmdPath + "WORK_EXEC"
 	cmdArguments := []string{key, value}
 	cmd := exec.Command(cmdExec, cmdArguments...)
+	out, err := cmd.CombinedOutput()
 	cmd.Dir = os.Getenv("WORK_DIR")
 
-	var out bytes.Buffer
-	cmd.Stdout = &out
-	err := cmd.Start()
-
 	if err != nil {
 		s.Out = err.Error()
 		return err
 	}
 
-	err = cmd.Wait()
-	if err != nil {
-		s.Out = err.Error()
-		return err
-	}
-
-	s.Out = out.String()
-	json.Unmarshal(out.Bytes(), &s.Result)
+	s.Out = string(out)
+	json.Unmarshal(out, &s.Result)
 
 	return nil
 }
@@ -55,25 +45,35 @@ func (s *status) postExec(key string, postj map[string]interface{}) error{
 	cmdPath := os.Getenv("WORK_DIR")
 	cmdExec := cmdPath + os.Getenv("WORK_EXEC")
 	cmd := exec.Command(cmdExec, args...)
+	out, err := cmd.CombinedOutput()
 	cmd.Dir = os.Getenv("WORK_DIR")
 
-	var out bytes.Buffer
-	cmd.Stdout = &out
-	err := cmd.Start()
+	if err != nil {
+		s.Out = err.Error()
+		return err
+	}
+
+	s.Out = string(out)
+	json.Unmarshal(out, &s.Result)
+
+	return nil
+}
+
+func (s *status) putExec(key string, p string) error{
+
+	cmdPath := os.Getenv("WORK_DIR")
+	cmdExec := cmdPath + os.Getenv("WORK_EXEC")
+	cmd := exec.Command(cmdExec, p)
+	out, err := cmd.CombinedOutput()
+	cmd.Dir = os.Getenv("WORK_DIR")
 
 	if err != nil {
 		s.Out = err.Error()
 		return err
 	}
 
-	err = cmd.Wait()
-	if err != nil {
-		s.Out = err.Error()
-		return err
-	}
-
-	s.Out = out.String()
-	json.Unmarshal(out.Bytes(), &s.Result)
+	s.Out = string(out)
+	json.Unmarshal(out, &s.Result)
 
 	return nil
 }

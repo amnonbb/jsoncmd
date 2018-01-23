@@ -1,9 +1,9 @@
 package main
 
-//import "os"
+import "os"
 
 func main() {
 	a := App{}
 	a.Initialize()
-	a.Run(":8080")
+	a.Run(":" + os.Getenv("WEB_PORT"))
 }

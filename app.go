@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/handlers"
+	"os"
 )
 
 type App struct {
@@ -22,12 +23,13 @@ func (a *App) Run(addr string) {
 	originsOk := handlers.AllowedOrigins([]string{"*"})
 	methodsOk := handlers.AllowedMethods([]string{"GET", "DELETE", "POST", "PUT", "OPTIONS"})
 
-	log.Fatal(http.ListenAndServe(":8080", handlers.CORS(originsOk, headersOk, methodsOk)(a.Router)))
+	log.Fatal(http.ListenAndServe(":" + os.Getenv("WEB_PORT"), handlers.CORS(originsOk, headersOk, methodsOk)(a.Router)))
 }
 
 func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/post/{id}", a.postJson).Methods("POST")
 	a.Router.HandleFunc("/get/{id}", a.getJson).Methods("GET")
+	a.Router.HandleFunc("/put/{id}", a.putJson).Methods("PUT")
 }
 
 func respondWithError(w http.ResponseWriter, code int, message string) {
