@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"github.com/gorilla/mux"
 	"io/ioutil"
-	"fmt"
 )
 
 func (a *App) getJson(w http.ResponseWriter, r *http.Request) {
