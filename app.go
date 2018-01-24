@@ -18,7 +18,7 @@ func (a *App) Initialize() {
 	a.initializeRoutes()
 }
 
-func (a *App) Run(addr string) {
+func (a *App) Run() {
 	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Content-Length", "Accept-Encoding"})
 	originsOk := handlers.AllowedOrigins([]string{"*"})
 	methodsOk := handlers.AllowedMethods([]string{"GET", "DELETE", "POST", "PUT", "OPTIONS"})
@@ -34,5 +34,6 @@ func (a *App) initializeRoutes() {
 
 func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	response, _ := json.Marshal(payload)
+	w.Header().Set("Content-Type", "application/json")
 	w.Write(response)
 }

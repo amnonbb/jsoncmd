@@ -19,8 +19,8 @@ func (s *status) getExec(key string, value string ) error {
 	cmdExec := cmdPath + "WORK_EXEC"
 	cmdArguments := []string{key, value}
 	cmd := exec.Command(cmdExec, cmdArguments...)
-	out, err := cmd.CombinedOutput()
 	cmd.Dir = os.Getenv("WORK_DIR")
+	out, err := cmd.CombinedOutput()
 
 	if err != nil {
 		s.Out = err.Error()
@@ -45,8 +45,8 @@ func (s *status) postExec(key string, postj map[string]interface{}) error{
 	cmdPath := os.Getenv("WORK_DIR")
 	cmdExec := cmdPath + os.Getenv("WORK_EXEC")
 	cmd := exec.Command(cmdExec, args...)
-	out, err := cmd.CombinedOutput()
 	cmd.Dir = os.Getenv("WORK_DIR")
+	out, err := cmd.CombinedOutput()
 
 	if err != nil {
 		s.Out = err.Error()
@@ -64,8 +64,8 @@ func (s *status) putExec(key string, p string) error{
 	cmdPath := os.Getenv("WORK_DIR")
 	cmdExec := cmdPath + os.Getenv("WORK_EXEC")
 	cmd := exec.Command(cmdExec, p)
-	out, err := cmd.CombinedOutput()
 	cmd.Dir = os.Getenv("WORK_DIR")
+	out, err := cmd.CombinedOutput()
 
 	if err != nil {
 		s.Out = err.Error()

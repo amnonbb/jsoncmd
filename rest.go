@@ -11,7 +11,7 @@ func (a *App) getJson(w http.ResponseWriter, r *http.Request) {
 	var s status
 	vars := mux.Vars(r)
 	key := vars["id"]
-	value := r.FormValue("spc")
+	value := r.FormValue("value")
 
 	err := s.getExec(key, value)
 
